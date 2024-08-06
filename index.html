@@ -7,7 +7,8 @@
     <style>
         body {
             margin: 0;
-            padding: 0;
+             padding: 0;
+            overflow: hidden;
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
@@ -25,15 +26,9 @@
     font-family: 'shoplift';
     src: url('fonts/shoplift.ttf') format('truetype');
 }
-        html, body {
-            height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden; /* Empêche le défilement */
-}
         .page {
             display: none;
-            
+        }
         .active {
             display: block;
         }
@@ -116,7 +111,7 @@
 
     <!-- Page d'Accueil -->
     <div id="page-home" class="page active">
-        <div class="header">COPRO 0.0.4.2</div>
+        <div class="header">COPRO 0.0.4.3</div>
         <div class="background-image" style="background-image: url('Images/Background_menu.jpg');"></div>
         <button class="play-button" id="start-game-button">
             <img src="Images/Jouer.png" alt="Jouer">
