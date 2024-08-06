@@ -8,7 +8,6 @@
         body {
             margin: 0;
             padding: 0;
-            overflow-x: hidden; /* Évite le défilement horizontal */
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
@@ -34,10 +33,7 @@
 }
         .page {
             display: none;
-            width: 100%;
-    height: 100%;
-    box-sizing: border-box; /* Inclut les marges et les bordures dans les dimensions */
-        }
+            
         .active {
             display: block;
         }
@@ -120,7 +116,7 @@
 
     <!-- Page d'Accueil -->
     <div id="page-home" class="page active">
-        <div class="header">COPRO 0.0.4.1</div>
+        <div class="header">COPRO 0.0.4.2</div>
         <div class="background-image" style="background-image: url('Images/Background_menu.jpg');"></div>
         <button class="play-button" id="start-game-button">
             <img src="Images/Jouer.png" alt="Jouer">
