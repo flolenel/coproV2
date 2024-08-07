@@ -36,7 +36,7 @@
             font-family: 'Drunk_Proud', sans-serif;
             color: #ffffff;
             position: absolute;
-            top: 30px; /* Ajustez la valeur selon vos besoins */
+            top: 30px;
             left: 50%;
             transform: translateX(-50%);
         }
@@ -46,7 +46,7 @@
             font-family: 'shoplift', sans-serif;
             color: #ffffff;
             position: relative;
-            top: 30px; /* Ajustez la valeur selon vos besoins */
+            top: 30px;
             left: 50%;
             transform: translateX(-50%);
         }
@@ -55,7 +55,7 @@
             font-family: 'Drunk_Proud', sans-serif;
             color: #ffffff;
             position: absolute;
-            top: 30px; /* Ajustez la valeur selon vos besoins */
+            top: 30px;
             left: 50%;
             transform: translateX(-50%);
         }
@@ -79,26 +79,24 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px; /* Espace entre les images */
+            gap: 15px;
         }
         .player-button {
             cursor: pointer;
-            width: 100px; /* Ajustez la taille des images selon vos besoins */
+            width: 100px;
             height: auto;
-            border: none; /* Évitez les bordures pour les images */
+            border: none;
             display: block;
         }
-        
         .next-button-image {
-        position: absolute;
-        bottom: 20px; /* Ajustez la distance par rapport au bas de l'écran selon vos besoins */
-        left: 50%;
-        transform: translateX(-50%);
-        cursor: pointer;
-        width: 150px; /* Largeur de l'image */
-        height: auto; /* Conserver le ratio de l'image */
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: pointer;
+            width: 150px;
+            height: auto;
         }
-
         .info, .button-container, .player-button-container {
             margin-bottom: 20px;
         }
@@ -109,7 +107,7 @@
             padding: 0;
         }
         .play-button img {
-            width: 200px; /* Ajustez la taille selon vos besoins */
+            width: 200px;
             height: auto;
         }
         .background-image {
@@ -127,45 +125,26 @@
             max-width: 100%;
             height: auto;
         }
-        .event-container {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-        }
-        .event-text {
-            font-size: 3em;
-            font-family: 'shoplift', sans-serif;
-            color: #ffffff;
-            margin-bottom: 20px;
-        }
-        .event-next-button {
-            display: none;
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            cursor: pointer;
-            width: 150px; /* Largeur de l'image */
-            height: auto; /* Conserver le ratio de l'image */
-        }
         .end-message {
             font-size: 1.2em;
             color: #d32f2f;
             margin-top: 20px;
         }
+        .event-message {
+            font-size: 3em;
+            font-family: 'shoplift', sans-serif;
+            color: #ffffff;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 10px;
+        }
         @media (max-width: 600px) {
             .play-button img {
-                width: 150px; /* Ajustez pour les petits écrans */
+                width: 150px;
             }
         }
     </style>
@@ -198,15 +177,10 @@
         <div class="month-info" id="month-info">Janvier</div>
         <div class="player-info" id="player-info">Joueur 1</div>
         <div class="image-container" id="event-image"></div>
+        <div class="event-message" id="event-message" style="display: none;"></div>
         <div class="button-container">
             <img id="next-button" src="Images/Suivant_150px.png" alt="Suivant" class="next-button-image">
         </div>
-    </div>
-
-    <!-- Conteneur d'Événement -->
-    <div id="event-container" class="event-container">
-        <div class="event-text" id="event-text"></div>
-        <img id="event-next-button" src="Images/Suivant_150px.png" alt="Suivant" class="event-next-button">
     </div>
 
     <!-- Page de Fin de Jeu -->
@@ -224,7 +198,6 @@
         let events = [];
         let minActions = 1;
         let probabilityAction = 1 / 5.33;
-        let lastEventTurn = -1;
 
         const PLAYER_CONFIG = {
             2: { minActions: 1, probability: 1 / 5.33 },
@@ -277,8 +250,7 @@
 
         // Fonction pour afficher une page spécifique
         function showPage(pageId) {
-            const pages = document.querySelectorAll('.page');
-            pages.forEach(page => {
+            document.querySelectorAll('.page').forEach(page => {
                 page.classList.remove('active');
             });
             document.getElementById(pageId).classList.add('active');
@@ -305,72 +277,50 @@
             // Mettre à jour les informations du joueur et du mois
             const playerInfoElement = document.getElementById('player-info');
             playerInfoElement.innerText = `Joueur ${currentPlayer}`;
-
-            // Ajouter des classes spécifiques en fonction du joueur courant
             playerInfoElement.className = `player-info player-${currentPlayer}`;
-
             document.getElementById('month-info').innerText = `${getMonthName(currentMonth)}`;
+
+            // Gérer l'événement
             handleEvent();
         }
 
         // Fonction pour gérer les événements
         function handleEvent() {
             const eventImage = document.getElementById('event-image');
-            const currentEvent = events.shift();
+            const eventMessage = document.getElementById('event-message');
+            const currentEvent = events[(currentMonth - 1) * players + currentPlayer - 1];
+
             if (currentEvent === 'concierge') {
-                showEvent('Images/concierge.jpg', 'La concierge inspecte l\'immeuble');
+                eventImage.innerHTML = '<img src="Images/Concierge.jpg" alt="Concierge">';
+                eventMessage.innerText = "La concierge inspecte l'immeuble";
+                eventMessage.style.display = 'block';
             } else if (currentEvent === 'courrier') {
-                showEvent('Images/courrier.jpg', 'Le courrier est relevé');
+                eventImage.innerHTML = '<img src="Images/Courrier.jpg" alt="Courrier">';
+                eventMessage.innerText = "Le courrier est releve";
+                eventMessage.style.display = 'block';
             } else {
                 eventImage.innerHTML = ''; // Aucun événement
+                eventMessage.style.display = 'none';
             }
-        }
-
-        // Fonction pour afficher un événement en plein écran
-        function showEvent(imageSrc, text) {
-            const eventContainer = document.getElementById('event-container');
-            const eventText = document.getElementById('event-text');
-            const eventNextButton = document.getElementById('event-next-button');
-            
-            eventContainer.style.backgroundImage = `url(${imageSrc})`;
-            eventText.innerText = text;
-            eventContainer.style.display = 'flex';
-            
-            // Afficher le bouton "Suivant" après 2 secondes
-            setTimeout(() => {
-                eventNextButton.style.display = 'block';
-            }, 2000);
-        }
-
-        // Fonction pour cacher l'événement et passer au joueur suivant
-        function hideEvent() {
-            const eventContainer = document.getElementById('event-container');
-            const eventNextButton = document.getElementById('event-next-button');
-            
-            eventContainer.style.display = 'none';
-            eventNextButton.style.display = 'none';
-            
-            currentPlayer++;
-            if (currentPlayer > players) {
-                currentPlayer = 1;
-                currentMonth++;
-            }
-            updateInfo();
         }
 
         // Gestionnaire de clic pour le bouton "Suivant"
         document.getElementById('next-button').addEventListener('click', () => {
-            currentPlayer++;
-            if (currentPlayer > players) {
-                currentPlayer = 1;
-                currentMonth++;
-            }
-            updateInfo();
-        });
+            const eventMessage = document.getElementById('event-message');
 
-        // Gestionnaire de clic pour le bouton "Suivant" de l'événement
-        document.getElementById('event-next-button').addEventListener('click', () => {
-            hideEvent();
+            if (eventMessage.style.display === 'block') {
+                // L'événement se termine, on passe au joueur suivant
+                events.shift(); // Retire l'événement une fois terminé
+                updateInfo();
+            } else {
+                // Aucun événement ou événement terminé
+                currentPlayer++;
+                if (currentPlayer > players) {
+                    currentPlayer = 1;
+                    currentMonth++;
+                }
+                updateInfo();
+            }
         });
 
         // Gestionnaire de clic pour le bouton "Rejouer"
