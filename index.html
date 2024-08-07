@@ -179,7 +179,7 @@
         <div class="image-container" id="event-image"></div>
         <div class="event-message" id="event-message" style="display: none;"></div>
         <div class="button-container">
-            <img id="next-button" src="Images/Suivant_150px.png" alt="Suivant" class="next-button-image">
+            <img id="next-button" src="Images/suivant_150px.png" alt="Suivant" class="next-button-image">
         </div>
     </div>
 
@@ -291,11 +291,11 @@
             const currentEvent = events[(currentMonth - 1) * players + currentPlayer - 1];
 
             if (currentEvent === 'concierge') {
-                eventImage.innerHTML = '<img src="Images/Concierge.jpg" alt="Concierge">';
+                eventImage.innerHTML = '<img src="Images/concierge.jpg" alt="Concierge">';
                 eventMessage.innerText = "La concierge inspecte l'immeuble";
                 eventMessage.style.display = 'block';
             } else if (currentEvent === 'courrier') {
-                eventImage.innerHTML = '<img src="Images/Courrier.jpg" alt="Courrier">';
+                eventImage.innerHTML = '<img src="Images/courrier.jpg" alt="Courrier">';
                 eventMessage.innerText = "Le courrier est releve";
                 eventMessage.style.display = 'block';
             } else {
