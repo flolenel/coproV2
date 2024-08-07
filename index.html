@@ -17,13 +17,13 @@
             text-align: center;
         }
         @font-face {
-    font-family: 'Drunk_Proud';
-    src: url('fonts/Drunk_Proud.otf') format('opentype');
-}
+            font-family: 'Drunk_Proud';
+            src: url('fonts/Drunk_Proud.otf') format('opentype');
+        }
         @font-face {
-    font-family: 'shoplift';
-    src: url('fonts/shoplift.ttf') format('truetype');
-}
+            font-family: 'shoplift';
+            src: url('fonts/shoplift.ttf') format('truetype');
+        }
         .page {
             display: none;
         }
@@ -34,7 +34,7 @@
             font-size: 4.5em;
             margin-bottom: 20px;
             font-family: 'Drunk_Proud', sans-serif;
-            color: #f0f0f0;
+            color: #ffffff;
             position: absolute;
             top: 30px; /* Ajustez la valeur selon vos besoins */
             left: 50%;
@@ -50,19 +50,53 @@
             left: 50%;
             transform: translateX(-50%);
         }
-        .player-button-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 15px; /* Espace entre les images */
+        .month-info {
+            font-size: 4em;
+            font-family: 'Drunk_Proud', sans-serif;
+            color: #ffffff;
+            position: absolute;
+            top: 30px; /* Ajustez la valeur selon vos besoins */
+            left: 50%;
+            transform: translateX(-50%);
         }
-
+        .player-info {
+            font-size: 2.5em;
+            font-family: 'shoplift', sans-serif;
+        }
+        .player-1 {
+            color: #461741;
+        }
+        .player-2 {
+            color: #153412;
+        }
+        .player-3 {
+            color: #3d2607;
+        }
+        .player-4 {
+            color: #6f1811;
+        }
+        .player-button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px; /* Espace entre les images */
+        }
         .player-button {
+            cursor: pointer;
+            width: 100px; /* Ajustez la taille des images selon vos besoins */
+            height: auto;
+            border: none; /* Évitez les bordures pour les images */
+            display: block;
+        }
+        
+        .next-button-image {
+        position: absolute;
+        bottom: 20px; /* Ajustez la distance par rapport au bas de l'écran selon vos besoins */
+        left: 50%;
+        transform: translateX(-50%);
         cursor: pointer;
-        width: 100px; /* Ajustez la taille des images selon vos besoins */
-        height: auto;
-        border: none; /* Évitez les bordures pour les images */
-        display: block;
+        width: 150px; /* Largeur de l'image */
+        height: auto; /* Conserver le ratio de l'image */
         }
 
         .info, .button-container, .player-button-container {
@@ -93,6 +127,37 @@
             max-width: 100%;
             height: auto;
         }
+        .event-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .event-text {
+            font-size: 3em;
+            font-family: 'shoplift', sans-serif;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+        .event-next-button {
+            display: none;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: pointer;
+            width: 150px; /* Largeur de l'image */
+            height: auto; /* Conserver le ratio de l'image */
+        }
         .end-message {
             font-size: 1.2em;
             color: #d32f2f;
@@ -117,26 +182,31 @@
     </div>
 
     <!-- Page de Sélection du Nombre de Joueurs -->
-<div id="page-player-select" class="page">
-    <div class="header2">Nombre de joueurs <br><br></div>
-    <div class="background-image" style="background-image: url('Images/background_jeu.jpg');"></div>
-    <div class="player-button-container">
-        <img src="Images/2_joueurs.png" class="player-button" data-players="2" alt="2 Joueurs">
-        <img src="Images/3_joueurs.png" class="player-button" data-players="3" alt="3 Joueurs">
-        <img src="Images/4_joueurs.png" class="player-button" data-players="4" alt="4 Joueurs">
+    <div id="page-player-select" class="page">
+        <div class="header2">Nombre de joueurs <br><br></div>
+        <div class="background-image" style="background-image: url('Images/background_jeu.jpg');"></div>
+        <div class="player-button-container">
+            <img src="Images/2_joueurs.png" class="player-button" data-players="2" alt="2 Joueurs">
+            <img src="Images/3_joueurs.png" class="player-button" data-players="3" alt="3 Joueurs">
+            <img src="Images/4_joueurs.png" class="player-button" data-players="4" alt="4 Joueurs">
+        </div>
     </div>
-</div>
-
 
     <!-- Page de Jeu -->
     <div id="page-game" class="page">
-        <div class="header"></div>
-        <div class="info" id="player-info">Joueur 1</div>
-        <div class="info" id="month-info">Janvier</div>
+        <div class="background-image" style="background-image: url('Images/background_jeu.jpg');"></div>
+        <div class="month-info" id="month-info">Janvier</div>
+        <div class="player-info" id="player-info">Joueur 1</div>
         <div class="image-container" id="event-image"></div>
         <div class="button-container">
-            <button id="next-button">Suivant</button>
+            <img id="next-button" src="Images/Suivant_150px.png" alt="Suivant" class="next-button-image">
         </div>
+    </div>
+
+    <!-- Conteneur d'Événement -->
+    <div id="event-container" class="event-container">
+        <div class="event-text" id="event-text"></div>
+        <img id="event-next-button" src="Images/Suivant_150px.png" alt="Suivant" class="event-next-button">
     </div>
 
     <!-- Page de Fin de Jeu -->
@@ -195,12 +265,32 @@
             return array;
         }
 
-        // Fonction pour changer de page
+        // Fonction pour obtenir le nom du mois
+        function getMonthName(month) {
+            const monthNames = [
+                'Janvier', 'Février', 'Mars', 'Avril',
+                'Mai', 'Juin', 'Juillet', 'Août',
+                'Septembre', 'Octobre', 'Novembre', 'Décembre'
+            ];
+            return monthNames[month - 1];
+        }
+
+        // Fonction pour afficher une page spécifique
         function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(page => {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => {
                 page.classList.remove('active');
             });
             document.getElementById(pageId).classList.add('active');
+        }
+
+        // Fonction pour démarrer le jeu
+        function startGame() {
+            events = generateEvents();
+            currentPlayer = 1;
+            currentMonth = 1;
+            showPage('page-game');
+            updateInfo();
         }
 
         // Fonction pour mettre à jour les informations de jeu
@@ -208,96 +298,103 @@
             if (currentMonth > 12) {
                 // Fin de la partie
                 showPage('page-end');
-                document.getElementById('end-message').innerText = ``;
+                document.getElementById('end-message').innerText = `La partie est terminée !`;
                 return;
             }
 
-            document.getElementById('player-info').innerText = `Joueur ${currentPlayer}`;
+            // Mettre à jour les informations du joueur et du mois
+            const playerInfoElement = document.getElementById('player-info');
+            playerInfoElement.innerText = `Joueur ${currentPlayer}`;
+
+            // Ajouter des classes spécifiques en fonction du joueur courant
+            playerInfoElement.className = `player-info player-${currentPlayer}`;
+
             document.getElementById('month-info').innerText = `${getMonthName(currentMonth)}`;
             handleEvent();
         }
 
-        // Fonction pour obtenir le nom du mois
-        function getMonthName(monthIndex) {
-            const months = [
-                'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
-                'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
-            ];
-            return months[monthIndex - 1];
-        }
-
-        // Fonction pour gérer l'apparition des événements
+        // Fonction pour gérer les événements
         function handleEvent() {
-            if (currentMonth === 1) {
-                // Premier mois : Pas d'événement
-                document.getElementById('event-image').innerHTML = '';
-                return;
-            }
-
-            const turn = (currentMonth - 1) * players + currentPlayer;
-            const eventType = events.shift();
-
-            if (eventType === 'concierge' || eventType === 'courrier') {
-                if (turn - lastEventTurn === 1) {
-                    if (Math.random() < 0.5) {
-                        events.unshift(eventType);
-                        document.getElementById('event-image').innerHTML = '';
-                        return;
-                    }
-                }
-                lastEventTurn = turn;
-
-                const img = document.createElement('img');
-                img.src = eventType === 'concierge' ? 'concierge.jpg' : 'courrier.jpg';
-                img.alt = eventType;
-                document.getElementById('event-image').innerHTML = '';
-                document.getElementById('event-image').appendChild(img);
+            const eventImage = document.getElementById('event-image');
+            const currentEvent = events.shift();
+            if (currentEvent === 'concierge') {
+                showEvent('Images/concierge.jpg', 'La concierge inspecte l\'immeuble');
+            } else if (currentEvent === 'courrier') {
+                showEvent('Images/courrier.jpg', 'Le courrier est relevé');
             } else {
-                document.getElementById('event-image').innerHTML = '';
+                eventImage.innerHTML = ''; // Aucun événement
             }
         }
 
-        // Événement pour démarrer le jeu
-        document.getElementById('start-game-button').addEventListener('click', function() {
-            showPage('page-player-select');
-        });
+        // Fonction pour afficher un événement en plein écran
+        function showEvent(imageSrc, text) {
+            const eventContainer = document.getElementById('event-container');
+            const eventText = document.getElementById('event-text');
+            const eventNextButton = document.getElementById('event-next-button');
+            
+            eventContainer.style.backgroundImage = `url(${imageSrc})`;
+            eventText.innerText = text;
+            eventContainer.style.display = 'flex';
+            
+            // Afficher le bouton "Suivant" après 2 secondes
+            setTimeout(() => {
+                eventNextButton.style.display = 'block';
+            }, 2000);
+        }
 
-        // Événement pour sélectionner le nombre de joueurs
-        document.querySelectorAll('.player-button').forEach(button => {
-            button.addEventListener('click', function() {
-                players = parseInt(this.getAttribute('data-players'));
-                const config = PLAYER_CONFIG[players];
-                minActions = config.minActions;
-                probabilityAction = config.probability;
-
-                currentPlayer = 1;
-                currentMonth = 1;
-                lastEventTurn = -1;
-                events = generateEvents();
-                showPage('page-game');
-                updateInfo();
-            });
-        });
-
-        // Événement pour passer au joueur suivant
-        document.getElementById('next-button').addEventListener('click', function() {
+        // Fonction pour cacher l'événement et passer au joueur suivant
+        function hideEvent() {
+            const eventContainer = document.getElementById('event-container');
+            const eventNextButton = document.getElementById('event-next-button');
+            
+            eventContainer.style.display = 'none';
+            eventNextButton.style.display = 'none';
+            
             currentPlayer++;
             if (currentPlayer > players) {
                 currentPlayer = 1;
                 currentMonth++;
-                if (currentMonth > 12) {
-                    // Vérifie si la partie est terminée
-                    updateInfo();
-                    return;
-                }
+            }
+            updateInfo();
+        }
+
+        // Gestionnaire de clic pour le bouton "Suivant"
+        document.getElementById('next-button').addEventListener('click', () => {
+            currentPlayer++;
+            if (currentPlayer > players) {
+                currentPlayer = 1;
+                currentMonth++;
             }
             updateInfo();
         });
 
-        // Événement pour rejouer
-        document.getElementById('restart-button').addEventListener('click', function() {
+        // Gestionnaire de clic pour le bouton "Suivant" de l'événement
+        document.getElementById('event-next-button').addEventListener('click', () => {
+            hideEvent();
+        });
+
+        // Gestionnaire de clic pour le bouton "Rejouer"
+        document.getElementById('restart-button').addEventListener('click', () => {
             showPage('page-home');
         });
+
+        // Gestionnaire de clic pour le bouton "Jouer"
+        document.getElementById('start-game-button').addEventListener('click', () => {
+            showPage('page-player-select');
+        });
+
+        // Gestionnaire de clic pour les boutons de sélection des joueurs
+        const playerButtons = document.querySelectorAll('.player-button');
+        playerButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                players = parseInt(event.target.dataset.players, 10);
+                const config = PLAYER_CONFIG[players];
+                minActions = config.minActions;
+                probabilityAction = config.probability;
+                startGame();
+            });
+        });
     </script>
+
 </body>
 </html>
