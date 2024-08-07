@@ -75,6 +75,14 @@
         .player-button-container img:last-child {
         margin-bottom: 150px; /* Ajoutez la marge souhaitée ici */
         }
+
+        .player-info img {
+        width: 300px; /* Ajustez la taille selon vos besoins */
+        height: auto; /* Maintient le ratio de l'image */
+        display: block;
+        margin: 0 auto;
+        }
+
         .info, .button-container, .player-button-container {
             margin-bottom: 20px;
         }
@@ -201,7 +209,9 @@
     <div id="page-game" class="page">
         <div class="background-image" style="background-image: url('Images/background_jeu.jpg');"></div>
         <div class="month-info" id="month-info">Janvier</div>
-        <div class="player-info" id="player-info">Joueur 1</div>
+        <div class="player-info" id="player-info">
+            <img id="player-image" src="" alt="Joueur">
+        </div>
         <div class="image-container" id="event-image"></div>
         <div class="button-container">
             <img id="next-button" src="Images/suivant_150px.png" alt="Suivant" class="next-button-image">
@@ -226,118 +236,113 @@
 
     <script>
         // Variables de jeu
-        let players = 0;
-        let currentPlayer = 1;
-        let currentMonth = 1;
-        let events = [];
-        let minActions = 1;
-        let probabilityAction = 1 / 5.33;
-        let lastEventTurn = -1;
+let players = 0;
+let currentPlayer = 1;
+let currentMonth = 1;
+let events = [];
+let minActions = 1;
+let probabilityAction = 1 / 5.33;
+let lastEventTurn = -1;
 
-        const PLAYER_CONFIG = {
-            2: { minActions: 1, probability: 1 / 5.33 },
-            3: { minActions: 2, probability: 1 / 6.55 },
-            4: { minActions: 3, probability: 1 / 7.4 }
-        };
+const PLAYER_CONFIG = {
+    2: { minActions: 1, probability: 1 / 5.33 },
+    3: { minActions: 2, probability: 1 / 6.55 },
+    4: { minActions: 3, probability: 1 / 7.4 }
+};
 
-        // Fonction pour générer les événements
-        function generateEvents() {
-            const totalTurns = players * 12;
-            const events = [];
-            let numActions = 0;
+// Fonction pour générer les événements
+function generateEvents() {
+    const totalTurns = players * 12;
+    const events = [];
+    let numActions = 0;
 
-            // Assure au moins minActions actions
-            while (numActions < minActions) {
-                events.push(Math.random() < 0.5 ? 'concierge' : 'courrier');
-                numActions++;
-            }
+    // Assure au moins minActions actions
+    while (numActions < minActions) {
+        events.push(Math.random() < 0.5 ? 'concierge' : 'courrier');
+        numActions++;
+    }
 
-            // Complète avec des événements aléatoires
-            for (let i = numActions; i < totalTurns; i++) {
-                if (Math.random() < probabilityAction) {
-                    events.push(Math.random() < 0.5 ? 'concierge' : 'courrier');
-                } else {
-                    events.push(null); // Aucun événement
-                }
-            }
-
-            return shuffle(events);
+    // Complète avec des événements aléatoires
+    for (let i = numActions; i < totalTurns; i++) {
+        if (Math.random() < probabilityAction) {
+            events.push(Math.random() < 0.5 ? 'concierge' : 'courrier');
+        } else {
+            events.push(null); // Aucun événement
         }
+    }
 
-        // Fonction pour mélanger un tableau
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
+    return shuffle(events);
+}
 
-        // Fonction pour changer de page
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            document.getElementById(pageId).classList.add('active');
-        }
+// Fonction pour mélanger un tableau
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
 
-        // Fonction pour mettre à jour les informations de jeu
-        function updateInfo() {
-            if (currentMonth > 12) {
-                // Fin de la partie
-                showPage('page-end');
-                document.getElementById('end-message').innerText = '';
-                return;
-            }
+// Fonction pour changer de page
+function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+    });
+    document.getElementById(pageId).classList.add('active');
+}
 
-            document.getElementById('player-info').innerText = `Joueur ${currentPlayer}`;
-            document.getElementById('month-info').innerText = `${getMonthName(currentMonth)}`;
-            handleEvent();
-        }
+// Fonction pour mettre à jour les informations de jeu
+function updateInfo() {
+    if (currentMonth > 12) {
+        // Fin de la partie
+        showPage('page-end');
+        document.getElementById('end-message').innerText = '';
+        return;
+    }
 
-        // Fonction pour obtenir le nom du mois
-        function getMonthName(monthIndex) {
-            const months = [
-                'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
-                'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
-            ];
-            return months[monthIndex - 1];
-        }
+    const playerImage = document.getElementById('player-image');
+    playerImage.src = `Images/joueur_${currentPlayer}.png`; // Chemin de l'image du joueur
+    document.getElementById('month-info').innerText = `${getMonthName(currentMonth)}`;
+    handleEvent();
+}
 
-        // Fonction pour gérer l'apparition des événements
-        function handleEvent() {
-            if (currentMonth === 1) {
-                // Premier mois : Pas d'événement
+// Fonction pour obtenir le nom du mois
+function getMonthName(monthIndex) {
+    const months = [
+        'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+        'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+    ];
+    return months[monthIndex - 1];
+}
+
+// Fonction pour gérer l'apparition des événements
+function handleEvent() {
+    if (currentMonth === 1) {
+        // Premier mois : Pas d'événement
+        document.getElementById('event-image').innerHTML = '';
+        return;
+    }
+
+    const turn = (currentMonth - 1) * players + currentPlayer;
+    const eventType = events.shift();
+
+    if (eventType === 'concierge' || eventType === 'courrier') {
+        if (turn - lastEventTurn === 1) {
+            if (Math.random() < 0.5) {
+                events.unshift(eventType);
                 document.getElementById('event-image').innerHTML = '';
                 return;
             }
+        }
+        lastEventTurn = turn;
 
-            const turn = (currentMonth - 1) * players + currentPlayer;
-            const eventType = events.shift();
-
-            if (eventType === 'concierge' || eventType === 'courrier') {
-                if (turn - lastEventTurn === 1) {
-                    if (Math.random() < 0.5) {
-                        events.unshift(eventType);
-                        document.getElementById('event-image').innerHTML = '';
-                        return;
-                    }
-                }
-                lastEventTurn = turn;
-
-                 // Affichage de l'overlay
+        // Affichage de l'overlay
         const overlay = document.getElementById('event-overlay');
         const overlayImage = document.getElementById('overlay-image');
         const overlayMessage = document.getElementById('overlay-message');
 
-        // Modifier les messages des événements
-        if (eventType === 'concierge') {
-            overlayImage.src = 'Images/concierge.jpg';
-            overlayMessage.innerText = 'LA CONCIERGE INSPECTE L\'IMMEUBLE !';
-        } else if (eventType === 'courrier') {
-            overlayImage.src = 'Images/courrier.jpg';
-            overlayMessage.innerText = 'LE COURRIER EST RELEVÉ !';
-        }
+        overlayImage.src = eventType === 'concierge' ? 'Images/concierge.jpg' : 'Images/courrier.jpg';
+        overlayMessage.innerText = eventType === 'concierge' ? "LA CONCIERGE INSPECTE L'IMMEUBLE" : "LE COURRIER EST RELEVÉ";
 
         overlay.style.display = 'flex'; // Afficher l'overlay
 
@@ -346,52 +351,53 @@
     }
 }
 
-        // Événement pour démarrer le jeu
-        document.getElementById('start-game-button').addEventListener('click', function() {
-            showPage('page-player-select');
-        });
+// Événement pour démarrer le jeu
+document.getElementById('start-game-button').addEventListener('click', function() {
+    showPage('page-player-select');
+});
 
-        // Événement pour sélectionner le nombre de joueurs
-        document.querySelectorAll('.player-button').forEach(button => {
-            button.addEventListener('click', function() {
-                players = parseInt(this.getAttribute('data-players'));
-                const config = PLAYER_CONFIG[players];
-                minActions = config.minActions;
-                probabilityAction = config.probability;
+// Événement pour sélectionner le nombre de joueurs
+document.querySelectorAll('.player-button').forEach(button => {
+    button.addEventListener('click', function() {
+        players = parseInt(this.getAttribute('data-players'));
+        const config = PLAYER_CONFIG[players];
+        minActions = config.minActions;
+        probabilityAction = config.probability;
 
-                currentPlayer = 1;
-                currentMonth = 1;
-                lastEventTurn = -1;
-                events = generateEvents();
-                showPage('page-game');
-                updateInfo();
-            });
-        });
+        currentPlayer = 1;
+        currentMonth = 1;
+        lastEventTurn = -1;
+        events = generateEvents();
+        showPage('page-game');
+        updateInfo();
+    });
+});
 
-        // Événement pour passer au joueur suivant
-        document.getElementById('next-button').addEventListener('click', function() {
-            currentPlayer++;
-            if (currentPlayer > players) {
-                currentPlayer = 1;
-                currentMonth++;
-                if (currentMonth > 12) {
-                    // Vérifie si la partie est terminée
-                    updateInfo();
-                    return;
-                }
-            }
+// Événement pour passer au joueur suivant
+document.getElementById('next-button').addEventListener('click', function() {
+    currentPlayer++;
+    if (currentPlayer > players) {
+        currentPlayer = 1;
+        currentMonth++;
+        if (currentMonth > 12) {
+            // Vérifie si la partie est terminée
             updateInfo();
-        });
+            return;
+        }
+    }
+    updateInfo();
+});
 
-        // Événement pour rejouer
-        document.getElementById('restart-button').addEventListener('click', function() {
-            showPage('page-home');
-        });
+// Événement pour rejouer
+document.getElementById('restart-button').addEventListener('click', function() {
+    showPage('page-home');
+});
 
-        // Gestionnaire d'événement pour fermer l'overlay
-        document.getElementById('close-overlay').addEventListener('click', function() {
-            document.getElementById('event-overlay').style.display = 'none'; // Masquer l'overlay
-        });
+// Gestionnaire d'événement pour fermer l'overlay
+document.getElementById('close-overlay').addEventListener('click', function() {
+    document.getElementById('event-overlay').style.display = 'none'; // Masquer l'overlay
+});
+
     </script>
 </body>
 </html>
