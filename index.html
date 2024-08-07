@@ -34,7 +34,7 @@
             font-size: 4.5em;
             margin-bottom: 20px;
             font-family: 'Drunk_Proud', sans-serif;
-            color: #ffffff;
+            color: #f0f0f0;
             position: absolute;
             top: 30px;
             left: 50%;
@@ -59,22 +59,6 @@
             left: 50%;
             transform: translateX(-50%);
         }
-        .player-info {
-            font-size: 2.5em;
-            font-family: 'shoplift', sans-serif;
-        }
-        .player-1 {
-            color: #461741;
-        }
-        .player-2 {
-            color: #153412;
-        }
-        .player-3 {
-            color: #3d2607;
-        }
-        .player-4 {
-            color: #6f1811;
-        }
         .player-button-container {
             display: flex;
             flex-direction: column;
@@ -88,6 +72,9 @@
             border: none;
             display: block;
         }
+        .info, .button-container, .player-button-container {
+            margin-bottom: 20px;
+        }
         .next-button-image {
             position: absolute;
             bottom: 20px;
@@ -96,9 +83,6 @@
             cursor: pointer;
             width: 150px;
             height: auto;
-        }
-        .info, .button-container, .player-button-container {
-            margin-bottom: 20px;
         }
         .play-button {
             cursor: pointer;
@@ -130,17 +114,59 @@
             color: #d32f2f;
             margin-top: 20px;
         }
-        .event-message {
-            font-size: 3em;
-            font-family: 'shoplift', sans-serif;
-            color: #ffffff;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 10px;
+        /* Styles pour l'overlay d'événements */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85); /* Fond semi-transparent */
+            display: none; /* Masqué par défaut */
+            align-items: center;
+            justify-content: center;
+            z-index: 1000; /* S'assurer que l'overlay est au-dessus de tout le reste */
+        }
+        .overlay-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            background: transparent;
+            padding: 20px;
             border-radius: 10px;
+        }
+        .overlay img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 10px;
+        }
+        .overlay-message {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2.5em;
+            font-family: 'Drunk_Proud', sans-serif;
+            color: #fff;
+            margin-top: 0px;
+            z-index: 1; /* S'assurer que le texte est au-dessus de l'image */
+        }
+        .close-button {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            font-size: 1em;
+            color: #fff;
+            background-color: #d32f2f;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1; /* S'assurer que le bouton est au-dessus de l'image */
+        }
+        .close-button:hover {
+            background-color: #b71c1c;
         }
         @media (max-width: 600px) {
             .play-button img {
@@ -177,7 +203,6 @@
         <div class="month-info" id="month-info">Janvier</div>
         <div class="player-info" id="player-info">Joueur 1</div>
         <div class="image-container" id="event-image"></div>
-        <div class="event-message" id="event-message" style="display: none;"></div>
         <div class="button-container">
             <img id="next-button" src="Images/suivant_150px.png" alt="Suivant" class="next-button-image">
         </div>
@@ -190,6 +215,15 @@
         <button id="restart-button">Rejouer</button>
     </div>
 
+    <!-- Overlay pour les événements -->
+    <div id="event-overlay" class="overlay">
+        <div class="overlay-content">
+            <img id="overlay-image" src="" alt="Événement">
+            <div id="overlay-message" class="overlay-message"></div>
+            <button id="close-overlay" class="close-button">Fermer</button>
+        </div>
+    </div>
+
     <script>
         // Variables de jeu
         let players = 0;
@@ -198,6 +232,7 @@
         let events = [];
         let minActions = 1;
         let probabilityAction = 1 / 5.33;
+        let lastEventTurn = -1;
 
         const PLAYER_CONFIG = {
             2: { minActions: 1, probability: 1 / 5.33 },
@@ -238,17 +273,7 @@
             return array;
         }
 
-        // Fonction pour obtenir le nom du mois
-        function getMonthName(month) {
-            const monthNames = [
-                'Janvier', 'Février', 'Mars', 'Avril',
-                'Mai', 'Juin', 'Juillet', 'Août',
-                'Septembre', 'Octobre', 'Novembre', 'Décembre'
-            ];
-            return monthNames[month - 1];
-        }
-
-        // Fonction pour afficher une page spécifique
+        // Fonction pour changer de page
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(page => {
                 page.classList.remove('active');
@@ -256,95 +281,117 @@
             document.getElementById(pageId).classList.add('active');
         }
 
-        // Fonction pour démarrer le jeu
-        function startGame() {
-            events = generateEvents();
-            currentPlayer = 1;
-            currentMonth = 1;
-            showPage('page-game');
-            updateInfo();
-        }
-
         // Fonction pour mettre à jour les informations de jeu
         function updateInfo() {
             if (currentMonth > 12) {
                 // Fin de la partie
                 showPage('page-end');
-                document.getElementById('end-message').innerText = `La partie est terminée !`;
+                document.getElementById('end-message').innerText = '';
                 return;
             }
 
-            // Mettre à jour les informations du joueur et du mois
-            const playerInfoElement = document.getElementById('player-info');
-            playerInfoElement.innerText = `Joueur ${currentPlayer}`;
-            playerInfoElement.className = `player-info player-${currentPlayer}`;
+            document.getElementById('player-info').innerText = `Joueur ${currentPlayer}`;
             document.getElementById('month-info').innerText = `${getMonthName(currentMonth)}`;
-
-            // Gérer l'événement
             handleEvent();
         }
 
-        // Fonction pour gérer les événements
-        function handleEvent() {
-            const eventImage = document.getElementById('event-image');
-            const eventMessage = document.getElementById('event-message');
-            const currentEvent = events[(currentMonth - 1) * players + currentPlayer - 1];
-
-            if (currentEvent === 'concierge') {
-                eventImage.innerHTML = '<img src="Images/concierge.jpg" alt="Concierge">';
-                eventMessage.innerText = "La concierge inspecte l'immeuble";
-                eventMessage.style.display = 'block';
-            } else if (currentEvent === 'courrier') {
-                eventImage.innerHTML = '<img src="Images/courrier.jpg" alt="Courrier">';
-                eventMessage.innerText = "Le courrier est releve";
-                eventMessage.style.display = 'block';
-            } else {
-                eventImage.innerHTML = ''; // Aucun événement
-                eventMessage.style.display = 'none';
-            }
+        // Fonction pour obtenir le nom du mois
+        function getMonthName(monthIndex) {
+            const months = [
+                'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+                'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+            ];
+            return months[monthIndex - 1];
         }
 
-        // Gestionnaire de clic pour le bouton "Suivant"
-        document.getElementById('next-button').addEventListener('click', () => {
-            const eventMessage = document.getElementById('event-message');
-
-            if (eventMessage.style.display === 'block') {
-                // L'événement se termine, on passe au joueur suivant
-                events.shift(); // Retire l'événement une fois terminé
-                updateInfo();
-            } else {
-                // Aucun événement ou événement terminé
-                currentPlayer++;
-                if (currentPlayer > players) {
-                    currentPlayer = 1;
-                    currentMonth++;
-                }
-                updateInfo();
+        // Fonction pour gérer l'apparition des événements
+        function handleEvent() {
+            if (currentMonth === 1) {
+                // Premier mois : Pas d'événement
+                document.getElementById('event-image').innerHTML = '';
+                return;
             }
-        });
 
-        // Gestionnaire de clic pour le bouton "Rejouer"
-        document.getElementById('restart-button').addEventListener('click', () => {
-            showPage('page-home');
-        });
+            const turn = (currentMonth - 1) * players + currentPlayer;
+            const eventType = events.shift();
 
-        // Gestionnaire de clic pour le bouton "Jouer"
-        document.getElementById('start-game-button').addEventListener('click', () => {
+            if (eventType === 'concierge' || eventType === 'courrier') {
+                if (turn - lastEventTurn === 1) {
+                    if (Math.random() < 0.5) {
+                        events.unshift(eventType);
+                        document.getElementById('event-image').innerHTML = '';
+                        return;
+                    }
+                }
+                lastEventTurn = turn;
+
+                 // Affichage de l'overlay
+        const overlay = document.getElementById('event-overlay');
+        const overlayImage = document.getElementById('overlay-image');
+        const overlayMessage = document.getElementById('overlay-message');
+
+        // Modifier les messages des événements
+        if (eventType === 'concierge') {
+            overlayImage.src = 'Images/concierge.jpg';
+            overlayMessage.innerText = 'LA CONCIERGE INSPECTE L\'IMMEUBLE !';
+        } else if (eventType === 'courrier') {
+            overlayImage.src = 'Images/courrier.jpg';
+            overlayMessage.innerText = 'LE COURRIER EST RELEVÉ !';
+        }
+
+        overlay.style.display = 'flex'; // Afficher l'overlay
+
+    } else {
+        document.getElementById('event-image').innerHTML = '';
+    }
+}
+
+        // Événement pour démarrer le jeu
+        document.getElementById('start-game-button').addEventListener('click', function() {
             showPage('page-player-select');
         });
 
-        // Gestionnaire de clic pour les boutons de sélection des joueurs
-        const playerButtons = document.querySelectorAll('.player-button');
-        playerButtons.forEach(button => {
-            button.addEventListener('click', (event) => {
-                players = parseInt(event.target.dataset.players, 10);
+        // Événement pour sélectionner le nombre de joueurs
+        document.querySelectorAll('.player-button').forEach(button => {
+            button.addEventListener('click', function() {
+                players = parseInt(this.getAttribute('data-players'));
                 const config = PLAYER_CONFIG[players];
                 minActions = config.minActions;
                 probabilityAction = config.probability;
-                startGame();
+
+                currentPlayer = 1;
+                currentMonth = 1;
+                lastEventTurn = -1;
+                events = generateEvents();
+                showPage('page-game');
+                updateInfo();
             });
         });
-    </script>
 
+        // Événement pour passer au joueur suivant
+        document.getElementById('next-button').addEventListener('click', function() {
+            currentPlayer++;
+            if (currentPlayer > players) {
+                currentPlayer = 1;
+                currentMonth++;
+                if (currentMonth > 12) {
+                    // Vérifie si la partie est terminée
+                    updateInfo();
+                    return;
+                }
+            }
+            updateInfo();
+        });
+
+        // Événement pour rejouer
+        document.getElementById('restart-button').addEventListener('click', function() {
+            showPage('page-home');
+        });
+
+        // Gestionnaire d'événement pour fermer l'overlay
+        document.getElementById('close-overlay').addEventListener('click', function() {
+            document.getElementById('event-overlay').style.display = 'none'; // Masquer l'overlay
+        });
+    </script>
 </body>
 </html>
