@@ -50,58 +50,15 @@
             left: 50%;
             transform: translateX(-50%);
         }
-        .page-game {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    height: 100vh;
-    padding: 5vh 0; /* Ajustez le padding selon vos besoins */
-    box-sizing: border-box;
-}
-
-.month-info {
-    font-size: 16vw; /* Utiliser des unités vw (viewport width) pour une taille responsive */
-    font-family: 'Drunk_Proud', sans-serif;
-    color: #ffffff;
-    margin-bottom: 3vh; /* Ajouter un espace sous le mois */
-}
-
-.player-info img {
-    width: 45vw; /* Taille de l'image responsive par rapport à la largeur de l'écran */
-    max-width: 80%; /* Limite maximale pour les grands écrans */
-    height: auto;
-    margin: 2vh 0; /* Espacement vertical en vh (viewport height) */
-    margin-bottom: 3vh; /* Ajouter un espace sous l'image */
-}
-
-.player-info {
-    text-align: center; /* Pour centrer le texte sous l'image */
-    margin-bottom: 2vh;
-}
-
-.next-button-image {
-    width: 35vw; /* Taille responsive pour le bouton */
-    max-width: 150px; /* Limite maximale pour les grands écrans */
-    height: auto;
-}
-
-@media (max-width: 600px) {
-    .month-info {
-        font-size: 16vw; /* Augmenter un peu la taille du texte sur les petits écrans */
-        margin-bottom: 2vh; /* Ajuster l'espace sous le mois sur les petits écrans */
-    }
-    
-    .player-info img {
-        margin-bottom: 2vh; /* Ajuster l'espace sous l'image sur les petits écrans */
-    }
-
-    .next-button-image {
-        width: 35vw; /* Ajuster la taille du bouton sur les petits écrans */
-    }
-}
-
-
+        .month-info {
+            font-size: 4em;
+            font-family: 'Drunk_Proud', sans-serif;
+            color: #ffffff;
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
         .player-button-container {
             display: flex;
             flex-direction: column;
@@ -129,7 +86,15 @@
         .info, .button-container, .player-button-container {
             margin-bottom: 20px;
         }
-        
+        .next-button-image {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: pointer;
+            width: 150px;
+            height: auto;
+        }
         .play-button {
             cursor: pointer;
             border: none;
